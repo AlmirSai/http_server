@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd ../
+
 # Function to initialize a Go module in a directory
 initialize_module() {
     local dir=$1

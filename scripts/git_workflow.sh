@@ -1,5 +1,7 @@
 #!/bin/bash
 
+cd ../
+
 # Function to check if we're in a git repository
 check_git_repo() {
     if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
