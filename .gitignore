@@ -8,6 +8,8 @@
 *.out
 bin/
 dist/
+build/
+release/
 
 # Go specific
 *.o
@@ -24,6 +26,11 @@ _testmain.go
 .DS_Store
 *.iml
 *.iws
+*.sublime-workspace
+*.sublime-project
+.project
+.settings/
+.classpath
 
 # Environment and secrets
 .env
@@ -32,9 +39,15 @@ _testmain.go
 *.pem
 *.key
 *.crt
+*.pfx
+*.p12
 certs/
 .aws/
 .kube/
+.ssh/
+*.gpg
+.secrets/
+.credentials/
 
 # Dependencies
 vendor/
@@ -45,7 +58,12 @@ go.work
 *.log
 logs/
 tmp/
+temp/
 docker-volumes/
+*.dump
+*.cache
+.cache/
+data/
 
 # Database
 *.db

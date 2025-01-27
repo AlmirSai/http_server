@@ -98,6 +98,71 @@ docker-compose ps
 
 Each service has a `config.yaml` file with the following sections:
 - Server configuration (ports, timeouts)
+- Database settings
+- Redis configuration
+- Logging preferences
+- Service dependencies
+
+## API Documentation
+
+### API Gateway Endpoints
+- `POST /api/v1/auth/login` - User authentication
+- `POST /api/v1/auth/register` - User registration
+- `GET /api/v1/users/profile` - Get user profile
+- `POST /api/v1/posts` - Create new post
+- `GET /api/v1/posts` - Get posts feed
+
+### Authentication
+All protected endpoints require a valid JWT token in the Authorization header:
+```
+Authorization: Bearer <token>
+```
+
+## Deployment
+
+### Production Deployment
+1. Set up production environment:
+```bash
+make prod-env
+```
+
+2. Build and push Docker images:
+```bash
+make docker-tag
+make docker-push
+```
+
+3. Deploy to Kubernetes:
+```bash
+make k8s-apply
+```
+
+### Monitoring
+- Access Grafana dashboard at `https://monitoring.yourdomain.com`
+- View service health status: `make health-check`
+- Monitor resources: `make monitor`
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Commit changes: `git commit -am 'Add new feature'`
+4. Push to branch: `git push origin feature/your-feature`
+5. Submit a Pull Request
+
+### Development Guidelines
+- Follow Go best practices and project structure
+- Write unit tests for new features
+- Update documentation as needed
+- Use conventional commits format
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Support
+
+For support and questions, please open an issue in the GitHub repository.
 - Database connections
 - JWT settings
 - Logging configuration

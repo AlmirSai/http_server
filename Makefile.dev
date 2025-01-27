@@ -1,0 +1,96 @@
+# Development-focused Makefile
+GO = go
+DOCKER_COMPOSE = docker-compose
+
+# Core development commands
+.PHONY: dev
+dev: dev-env up
+
+.PHONY: dev-env
+dev-env:
+	cp .env.dev .env
+
+.PHONY: up
+up:
+	$(DOCKER_COMPOSE) up -d
+
+.PHONY: down
+down:
+	$(DOCKER_COMPOSE) down
+
+.PHONY: build
+build:
+	$(DOCKER_COMPOSE) build
+
+# Service commands
+.PHONY: run-services
+run-services: run-auth run-user run-post run-media run-gateway
+
+.PHONY: run-auth
+run-auth:
+	go run ./auth-service/cmd/app/main.go
+
+.PHONY: run-user
+run-user:
+	go run ./user-service/cmd/app/main.go
+
+.PHONY: run-post
+run-post:
+	go run ./post-service/cmd/app/main.go
+
+.PHONY: run-media
+run-media:
+	go run ./media-service/cmd/app/main.go
+
+.PHONY: run-gateway
+run-gateway:
+	go run ./api-gateway/cmd/app/main.go
+
+# Testing commands
+.PHONY: test
+test:
+	$(GO) test ./... -v
+
+.PHONY: test-coverage
+test-coverage:
+	$(GO) test ./... -v -coverprofile=coverage.out
+	go tool cover -html=coverage.out
+
+# Code quality
+.PHONY: fmt
+fmt:
+	$(GO) fmt ./...
+
+.PHONY: tidy
+tidy:
+	$(GO) mod tidy
+
+# Database
+.PHONY: db-setup
+db-setup:
+	docker run --name postgres-dev \
+		-e POSTGRES_USER=dev_user \
+		-e POSTGRES_PASSWORD=dev_password \
+		-e POSTGRES_DB=dev_db \
+		-p 5432:5432 \
+		-d postgres:latest
+
+.PHONY: db-clean
+db-clean:
+	docker stop postgres-dev
+	docker rm postgres-dev
+
+# Help
+.PHONY: help
+help:
+	@echo "Development Commands:"
+	@echo "  make dev          - Set up development environment and start services"
+	@echo "  make up           - Start all services"
+	@echo "  make down         - Stop all services"
+	@echo "  make build        - Build all services"
+	@echo "  make run-services - Run all services locally"
+	@echo "  make test         - Run tests"
+	@echo "  make fmt          - Format code"
+	@echo "  make tidy         - Tidy go modules"
+	@echo "  make db-setup     - Set up development database"
+	@echo "  make db-clean     - Clean up development database"

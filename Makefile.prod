@@ -1,0 +1,75 @@
+# Production-focused Makefile
+DOCKER_COMPOSE = docker-compose
+KUBECTL = kubectl
+DOCKER_REGISTRY = your-registry
+APP_VERSION = 0.1.0
+
+# Core production commands
+.PHONY: prod
+prod: prod-env build docker-tag docker-push k8s-apply
+
+.PHONY: prod-env
+prod-env:
+	cp .env.prod .env
+
+# Deployment commands
+.PHONY: k8s-apply
+k8s-apply:
+	$(KUBECTL) apply -f k8s/base/namespace.yaml
+	$(KUBECTL) apply -f k8s/base/config-map.yaml
+	$(KUBECTL) apply -f k8s/base/postgres-secret.yaml
+	$(KUBECTL) apply -f k8s/base/logging.yaml
+
+.PHONY: k8s-delete
+k8s-delete:
+	$(KUBECTL) delete -f k8s/base
+
+# Docker commands
+.PHONY: docker-tag
+docker-tag:
+	docker tag api-gateway:latest $(DOCKER_REGISTRY)/api-gateway:$(APP_VERSION)
+	docker tag auth-service:latest $(DOCKER_REGISTRY)/auth-service:$(APP_VERSION)
+
+.PHONY: docker-push
+docker-push: docker-tag
+	docker push $(DOCKER_REGISTRY)/api-gateway:$(APP_VERSION)
+	docker push $(DOCKER_REGISTRY)/auth-service:$(APP_VERSION)
+
+# SSL Certificate
+.PHONY: ssl-cert
+ssl-cert:
+	mkdir -p certs
+	openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
+		-keyout certs/server.key -out certs/server.crt
+
+# Monitoring
+.PHONY: monitor
+monitor:
+	docker stats
+
+.PHONY: health-check
+health-check:
+	@echo "Checking production services health..."
+	curl -f https://api.yourdomain.com/health || echo "API Gateway: DOWN"
+	curl -f https://auth.yourdomain.com/health || echo "Auth Service: DOWN"
+
+# Cleanup
+.PHONY: clean
+clean:
+	$(DOCKER_COMPOSE) down -v
+	rm -rf certs/*
+	docker system prune -af
+
+# Help
+.PHONY: help
+help:
+	@echo "Production Commands:"
+	@echo "  make prod         - Deploy to production"
+	@echo "  make k8s-apply   - Apply Kubernetes configurations"
+	@echo "  make k8s-delete  - Delete Kubernetes configurations"
+	@echo "  make docker-tag  - Tag Docker images"
+	@echo "  make docker-push - Push Docker images to registry"
+	@echo "  make ssl-cert    - Generate SSL certificates"
+	@echo "  make monitor     - Monitor production services"
+	@echo "  make health-check - Check services health"
+	@echo "  make clean       - Clean up production environment"
