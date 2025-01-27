@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: social-network
+  labels:
+    name: social-network
+    environment: development
+    app: social-network
+    tier: application
+    version: v1
+    managed-by: platform-team
+  annotations:
+    description: "Social Network Application Namespace"
+    team: "platform"
+    cost-center: "social-platform"
+    contact: "platform-team@company.com"
+    documentation: "https://wiki.company.com/social-network"
+
+spec:
+  finalizers:
+  - kubernetes
+---
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: social-network-quota
+  namespace: social-network
+spec:
+  hard:
+    requests.cpu: "4"
+    requests.memory: 8Gi
+    limits.cpu: "8"
+    limits.memory: 16Gi
+    pods: "20"
+    services: "10"
+    persistentvolumeclaims: "10"
+    secrets: "20"
+    configmaps: "20"
+---
+apiVersion: v1
+kind: LimitRange
+metadata:
+  name: social-network-limits
+  namespace: social-network
+spec:
+  limits:
+  - type: Container
+    default:
+      cpu: 500m
+      memory: 512Mi
+    defaultRequest:
+      cpu: 200m
+      memory: 256Mi
+    max:
+      cpu: 2
+      memory: 4Gi
+    min:
+      cpu: 100m
+      memory: 128Mi
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: social-network-policy
+  namespace: social-network
+spec:
+  podSelector: {}
+  policyTypes:
+  - Ingress
+  - Egress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          name: social-network
+    ports:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443
+  egress:
+  - to:
+    - namespaceSelector:
+        matchLabels:
+          name: social-network
+    ports:
+    - protocol: TCP
+      port: 80
+    - protocol: TCP
+      port: 443

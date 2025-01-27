@@ -1,0 +1,102 @@
+server:
+  port: ${SERVER_PORT:-8081}
+  read_timeout: ${SERVER_READ_TIMEOUT:-5s}
+  write_timeout: ${SERVER_WRITE_TIMEOUT:-5s}
+  shutdown_timeout: ${SERVER_SHUTDOWN_TIMEOUT:-10s}
+  tls_enabled: ${TLS_ENABLED:-true}
+  tls_cert_file: ${TLS_CERT_FILE:-"/path/to/cert.pem"}
+  tls_key_file: ${TLS_KEY_FILE:-"/path/to/key.pem"}
+  request_id_header: ${REQUEST_ID_HEADER:-"X-Request-ID"}
+  correlation_id_header: ${CORRELATION_ID_HEADER:-"X-Correlation-ID"}
+
+jwt:
+  secret_key: ${JWT_SECRET_KEY:-"your-secret-key-here"}
+  expiration: ${JWT_EXPIRATION:-24h}
+  refresh_token_secret: ${JWT_REFRESH_SECRET:-"your-refresh-token-secret-here"}
+  refresh_token_expiry: ${JWT_REFRESH_EXPIRY:-168h} # 7 days
+  token_rotation_enable: ${JWT_TOKEN_ROTATION:-true}
+
+database:
+  host: ${DB_HOST:-"localhost"}
+  port: ${DB_PORT:-5432}
+  user: ${DB_USER:-"postgres"}
+  password: ${DB_PASSWORD:-"postgres"}
+  dbname: ${DB_NAME:-"auth_service"}
+  sslmode: ${DB_SSLMODE:-"disable"}
+  max_open_conns: ${DB_MAX_OPEN_CONNS:-25}
+  max_idle_conns: ${DB_MAX_IDLE_CONNS:-25}
+  conn_max_lifetime: ${DB_CONN_MAX_LIFETIME:-5m}
+
+security:
+  rate_limit:
+    enabled: ${RATE_LIMIT_ENABLED:-true}
+    requests_per_minute: ${RATE_LIMIT_RPM:-60}
+    burst_size: ${RATE_LIMIT_BURST:-10}
+  password:
+    min_length: ${PASSWORD_MIN_LENGTH:-12}
+    require_upper: ${PASSWORD_REQUIRE_UPPER:-true}
+    require_lower: ${PASSWORD_REQUIRE_LOWER:-true}
+    require_number: ${PASSWORD_REQUIRE_NUMBER:-true}
+    require_special: ${PASSWORD_REQUIRE_SPECIAL:-true}
+    max_attempts: ${PASSWORD_MAX_ATTEMPTS:-5}
+    lockout_duration: ${PASSWORD_LOCKOUT_DURATION:-15m}
+    hash_algorithm: ${PASSWORD_HASH_ALGORITHM:-"argon2id"}
+    hash_memory: ${PASSWORD_HASH_MEMORY:-65536}
+    hash_iterations: ${PASSWORD_HASH_ITERATIONS:-3}
+    hash_parallelism: ${PASSWORD_HASH_PARALLELISM:-4}
+  headers:
+    allowed_origins:
+    - ${ALLOWED_ORIGIN:-"https://yourdomain.com"}
+    allowed_methods:
+    - "GET"
+    - "POST"
+    - "PUT"
+    - "DELETE"
+    allowed_headers:
+    - "Content-Type"
+    - "Authorization"
+    - "X-Request-ID"
+    - "X-Correlation-ID"
+    exposed_headers:
+    - "X-Request-ID"
+    - "X-Correlation-ID"
+    allow_credentials: ${ALLOW_CREDENTIALS:-true}
+    enable_csp: ${ENABLE_CSP:-true}
+    csp_directives: ${CSP_DIRECTIVES:-"default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; frame-ancestors 'none'"}
+    enable_hsts: ${ENABLE_HSTS:-true}
+    hsts_max_age: ${HSTS_MAX_AGE:-31536000s} # 1 year
+    enable_xframe: ${ENABLE_XFRAME:-true}
+    enable_nosniff: ${ENABLE_NOSNIFF:-true}
+    enable_xss_protection: ${ENABLE_XSS_PROTECTION:-true}
+
+telemetry:
+  enabled: ${TELEMETRY_ENABLED:-true}
+  metrics:
+    enabled: ${METRICS_ENABLED:-true}
+    port: ${METRICS_PORT:-9090}
+    path: ${METRICS_PATH:-"/metrics"}
+    labels:
+      service: "auth-service"
+      environment: ${ENV:-production}
+  tracing:
+    enabled: ${TRACING_ENABLED:-true}
+    provider: ${TRACING_PROVIDER:-"jaeger"}
+    endpoint: ${JAEGER_ENDPOINT:-"http://localhost:14268/api/traces"}
+    service_name: ${TRACING_SERVICE_NAME:-"auth-service"}
+    sample_rate: ${TRACING_SAMPLE_RATE:-0.1}
+  logging:
+    level: ${LOG_LEVEL:-"info"}
+    format: ${LOG_FORMAT:-"json"}
+    output: ${LOG_OUTPUT:-"stdout"}
+    caller: ${LOG_CALLER:-true}
+    stacktrace_level: ${LOG_STACKTRACE_LEVEL:-"error"}
+    encoding_time: ${LOG_ENCODING_TIME:-"ISO8601"}
+    encoding_duration: ${LOG_ENCODING_DURATION:-"seconds"}
+
+health:
+  enabled: ${HEALTH_ENABLED:-true}
+  port: ${HEALTH_PORT:-8082}
+  path: ${HEALTH_PATH:-"/health"}
+  checks:
+    database: ${HEALTH_CHECK_DB:-true}
+    redis: ${HEALTH_CHECK_REDIS:-true}

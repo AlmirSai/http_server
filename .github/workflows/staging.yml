@@ -1,0 +1,77 @@
+name: Staging Deployment
+
+on:
+  push:
+    branches: [ develop ]
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.22'
+        
+    - name: Install dependencies
+      run: go mod download
+        
+    - name: Run tests
+      run: go test -v ./...
+      
+    - name: Run integration tests
+      run: make integration-test
+
+  security-scan:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Run Gosec Security Scanner
+      uses: securego/gosec@master
+      with:
+        args: ./...
+        
+    - name: Run dependency vulnerability scan
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: 'fs'
+        scan-ref: '.'
+        format: 'table'
+
+  deploy-staging:
+    needs: [test, security-scan]
+    runs-on: ubuntu-latest
+    environment: staging
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: ${{ secrets.AWS_REGION }}
+    
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v2
+    
+    - name: Build and push images
+      env:
+        ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+      run: |
+        docker-compose -f docker-compose.yml build
+        docker-compose -f docker-compose.yml push
+    
+    - name: Update ECS services
+      run: |
+        aws ecs update-service --cluster staging-cluster --service api-gateway --force-new-deployment
+        aws ecs update-service --cluster staging-cluster --service auth-service --force-new-deployment
+        aws ecs update-service --cluster staging-cluster --service user-service --force-new-deployment
+        aws ecs update-service --cluster staging-cluster --service post-service --force-new-deployment
+        aws ecs update-service --cluster staging-cluster --service media-service --force-new-deployment

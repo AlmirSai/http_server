@@ -1,0 +1,93 @@
+# Binaries and build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+bin/
+dist/
+
+# Go specific
+*.o
+*.a
+_obj
+_test
+_testmain.go
+
+# IDE specific files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+*.iml
+*.iws
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.crt
+certs/
+.aws/
+.kube/
+
+# Dependencies
+vendor/
+node_modules/
+go.work
+
+# Logs and data
+*.log
+logs/
+tmp/
+docker-volumes/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Test coverage and profiling
+coverage/
+coverage.txt
+profile.out
+*.cover
+*.prof
+
+# Docker
+.docker/
+docker-volumes/
+.dockerignore
+
+# Temporary files
+*.tmp
+*.temp
+*.bak
+*~
+
+# Media files
+uploads/
+media/
+storage/
+
+# Generated files
+*.pb.go
+swagger/
+api/swagger/
+*.gen.go
+
+# Cloud provider
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraformrc
+terraform.rc
+
+# Kubernetes
+kubeconfig
+*.kubeconfig

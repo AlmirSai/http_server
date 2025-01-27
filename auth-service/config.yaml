@@ -1,0 +1,100 @@
+server:
+  port: ${SERVER_PORT:-8080}
+  timeout: ${SERVER_TIMEOUT:-30s}
+  read_timeout: ${SERVER_READ_TIMEOUT:-15s}
+  write_timeout: ${SERVER_WRITE_TIMEOUT:-15s}
+  shutdown_timeout: ${SERVER_SHUTDOWN_TIMEOUT:-10s}
+  tls_enabled: ${TLS_ENABLED:-true}
+  tls_cert_file: ${TLS_CERT_FILE:-"/path/to/cert.pem"}
+  tls_key_file: ${TLS_KEY_FILE:-"/path/to/key.pem"}
+  security:
+    ssl_enabled: ${SSL_ENABLED:-true}
+    ssl_min_version: ${SSL_MIN_VERSION:-"TLS1.2"}
+    hsts_enabled: ${HSTS_ENABLED:-true}
+    frame_deny: ${FRAME_DENY:-true}
+  rate_limit:
+    enabled: ${RATE_LIMIT_ENABLED:-true}
+    requests_per_minute: ${RATE_LIMIT_RPM:-60}
+    burst_size: ${RATE_LIMIT_BURST:-10}
+
+database:
+  driver: postgres
+  host: ${DB_HOST:-localhost}
+  port: ${DB_PORT:-5432}
+  user: ${DB_USER:-postgres}
+  password: ${DB_PASSWORD:-postgres}
+  name: ${DB_NAME:-auth_db}
+  ssl_mode: disable
+  max_open_conns: 25
+  max_idle_conns: 25
+  conn_max_lifetime: 5m
+  retry:
+    attempts: 5
+    delay: 5s
+  statement_timeout: 30s
+
+redis:
+  host: localhost
+  port: 6379
+  db: 0
+  pool_size: 10
+  dial_timeout: 5s
+  read_timeout: 3s
+  write_timeout: 3s
+  max_retries: 3
+
+jwt:
+  secret_key: ${JWT_SECRET:-your-secret-key}
+  expiration: ${JWT_EXPIRATION:-24h}
+  refresh_token_secret: ${JWT_REFRESH_SECRET:-your-refresh-token-secret}
+  refresh_token_expiry: ${JWT_REFRESH_EXPIRATION:-168h}
+  token_rotation_enable: ${JWT_TOKEN_ROTATION:-true}
+  blacklist_enabled: ${JWT_BLACKLIST_ENABLED:-true}
+  issuer: ${JWT_ISSUER:-"auth-service"}
+  algorithm: ${JWT_ALGORITHM:-"HS256"}
+
+security:
+  password:
+    min_length: ${PASSWORD_MIN_LENGTH:-12}
+    require_upper: ${PASSWORD_REQUIRE_UPPER:-true}
+    require_lower: ${PASSWORD_REQUIRE_LOWER:-true}
+    require_number: ${PASSWORD_REQUIRE_NUMBER:-true}
+    require_special: ${PASSWORD_REQUIRE_SPECIAL:-true}
+    max_attempts: ${PASSWORD_MAX_ATTEMPTS:-5}
+  headers:
+    allowed_origins:
+    - ${CORS_ORIGIN:-"*"}
+    allowed_methods:
+    - "GET"
+    - "POST"
+    - "PUT"
+    - "DELETE"
+    allowed_headers:
+    - "Content-Type"
+    - "Authorization"
+    - "X-Request-ID"
+    exposed_headers:
+    - "X-Request-ID"
+    allow_credentials: ${CORS_CREDENTIALS:-true}
+    enable_csp: ${SECURITY_CSP_ENABLED:-true}
+    csp_directives: ${CSP_DIRECTIVES:-"default-src 'self'; script-src 'self'"}
+    enable_hsts: ${SECURITY_HSTS_ENABLED:-true}
+    hsts_max_age: ${HSTS_MAX_AGE:-31536000s}
+
+telemetry:
+  enabled: ${TELEMETRY_ENABLED:-true}
+  metrics:
+    enabled: ${METRICS_ENABLED:-true}
+    port: ${METRICS_PORT:-9090}
+    path: ${METRICS_PATH:-"/metrics"}
+  tracing:
+    enabled: ${TRACING_ENABLED:-true}
+    provider: ${TRACING_PROVIDER:-"jaeger"}
+    endpoint: ${JAEGER_ENDPOINT:-"http://localhost:14268/api/traces"}
+    service_name: ${SERVICE_NAME:-"auth-service"}
+    sample_rate: ${TRACING_SAMPLE_RATE:-0.1}
+  logging:
+    level: ${LOG_LEVEL:-"info"}
+    format: ${LOG_FORMAT:-"json"}
+    output: ${LOG_OUTPUT:-"stdout"}
+    time_format: ${LOG_TIME_FORMAT:-"2006-01-02T15:04:05Z07:00"}

@@ -1,0 +1,61 @@
+server:
+  port: 8080
+  timeout: 30s
+  read_timeout: 15s
+  write_timeout: 15s
+  shutdown_timeout: 10s
+  security:
+    ssl_enabled: false
+    ssl_min_version: "TLS1.2"
+    hsts_enabled: false
+    frame_deny: true
+  rate_limit:
+    enabled: false
+    requests_per_minute: 1000
+
+database:
+  driver: postgres
+  host: ${DB_HOST:-localhost}
+  port: ${DB_PORT:-5432}
+  user: ${DB_USER:-postgres}
+  password: ${DB_PASSWORD:-postgres}
+  name: ${DB_NAME:-auth_db_test}
+  ssl_mode: disable
+  max_open_conns: 10
+  max_idle_conns: 5
+  conn_max_lifetime: 5m
+  retry:
+    attempts: 3
+    delay: 2s
+  statement_timeout: 10s
+
+redis:
+  host: ${REDIS_HOST:-localhost}
+  port: ${REDIS_PORT:-6379}
+  db: 1
+  pool_size: 5
+  dial_timeout: 2s
+  read_timeout: 2s
+  write_timeout: 2s
+  max_retries: 2
+
+jwt:
+  secret: ${JWT_SECRET:-test-secret-key}
+  expiration: ${JWT_EXPIRATION:-15m}
+  refresh_expiration: ${JWT_REFRESH_EXPIRATION:-1h}
+  blacklist_enabled: true
+  issuer: "auth-service-test"
+  algorithm: "HS256"
+
+telemetry:
+  enabled: false
+  metrics_path: "/metrics"
+  prometheus_enabled: false
+  tracing_enabled: false
+  sampling_rate: 0.0
+  metrics:
+    enabled: false
+    port: 9090
+  tracing:
+    enabled: false
+    service_name: "auth-service-test"

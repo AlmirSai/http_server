@@ -1,0 +1,33 @@
+# This file defines code ownership and review requirements
+
+# Default owners for everything in the repo
+* @AlmirSai
+
+# API Gateway service
+/api-gateway/ @AlmirSai
+
+# Auth Service
+/auth-service/ @AlmirSai
+
+# User Service
+/user-service/ @AlmirSai
+
+# Media Service
+/media-service/ @AlmirSai
+
+# Post Service
+/post-service/ @AlmirSai
+
+# Shared libraries and utilities
+/shared/ @AlmirSai
+
+# Infrastructure and deployment
+/.github/workflows/ @AlmirSai
+Makefile @AlmirSai
+docker-compose.yml @AlmirSai
+
+# Documentation
+*.md @AlmirSai
+
+# Security-related files
+SECURITY.md @AlmirSai

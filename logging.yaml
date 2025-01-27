@@ -1,0 +1,115 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: logging-config
+  namespace: social-network
+  labels:
+    app: social-network
+    component: logging
+  annotations:
+    description: "Logging configuration for social network services"
+data:
+  logging.yaml: |
+    development:
+      level: debug
+      encoding: console
+      outputPaths:
+        - stdout
+      errorOutputPaths:
+        - stderr
+      logRotation:
+        maxSize: 100    # megabytes
+        maxAge: 7      # days
+        maxBackups: 5
+        compress: true
+      encoderConfig:
+        messageKey: message
+        levelKey: level
+        timeKey: timestamp
+        nameKey: logger
+        callerKey: caller
+        functionKey: function
+        stacktraceKey: stacktrace
+        levelEncoder: lowercase
+        timeEncoder: ISO8601
+        durationEncoder: string
+        callerEncoder: short
+        lineEnding: "\n"
+      sampling:
+        initial: 100
+        thereafter: 100
+
+    production:
+      level: info
+      encoding: json
+      outputPaths:
+        - stdout
+        - /var/log/app/app.log
+      errorOutputPaths:
+        - stderr
+        - /var/log/app/error.log
+      logRotation:
+        maxSize: 500    # megabytes
+        maxAge: 30     # days
+        maxBackups: 10
+        compress: true
+      sampling:
+        initial: 100
+        thereafter: 100
+      tracing:
+        enabled: true
+        samplingRate: 0.1
+      metrics:
+        enabled: true
+        address: ":9090"
+      encoderConfig:
+        messageKey: message
+        levelKey: level
+        timeKey: timestamp
+        nameKey: logger
+        callerKey: caller
+        functionKey: function
+        stacktraceKey: stacktrace
+        levelEncoder: lowercase
+        timeEncoder: epoch
+        durationEncoder: seconds
+        callerEncoder: full
+      sampling:
+        initial: 100
+        thereafter: 100
+
+    staging:
+      level: debug
+      encoding: json
+      outputPaths:
+        - stdout
+        - /var/log/app/app.log
+      errorOutputPaths:
+        - stderr
+        - /var/log/app/error.log
+      logRotation:
+        maxSize: 200    # megabytes
+        maxAge: 14     # days
+        maxBackups: 7
+        compress: true
+      sampling:
+        initial: 100
+        thereafter: 100
+      tracing:
+        enabled: true
+        samplingRate: 0.5
+      metrics:
+        enabled: true
+        address: ":9090"
+      encoderConfig:
+        messageKey: message
+        levelKey: level
+        timeKey: timestamp
+        nameKey: logger
+        callerKey: caller
+        functionKey: function
+        stacktraceKey: stacktrace
+        levelEncoder: lowercase
+        timeEncoder: ISO8601
+        durationEncoder: string
+        callerEncoder: short

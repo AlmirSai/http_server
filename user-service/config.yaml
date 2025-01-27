@@ -1,0 +1,29 @@
+server:
+  port: 8080
+  timeout: 30s
+  read_timeout: 15s
+  write_timeout: 15s
+  shutdown_timeout: 10s
+  security:
+    ssl_enabled: true
+    ssl_min_version: "TLS1.2"
+
+database:
+  driver: postgres
+  host: ${DB_HOST}
+  port: ${DB_PORT:-5432}
+  user: ${DB_USER}
+  password: ${DB_PASSWORD}
+  name: ${DB_NAME}
+  ssl_mode: disable
+  max_open_conns: 25
+  max_idle_conns: 25
+  conn_max_lifetime: 5m
+
+services:
+  auth:
+    url: ${AUTH_SERVICE_URL}
+    timeout: 5s
+    retry:
+      max_attempts: 3
+      initial_interval: 100ms

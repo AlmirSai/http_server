@@ -1,0 +1,73 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config
+  namespace: social-network
+data:
+  # Database Configuration
+  DB_HOST: "postgres"
+  DB_PORT: "5432"
+  DB_NAME: "socialnetwork"
+  DB_SSL_MODE: "disable"
+  DB_MAX_OPEN_CONNS: "25"
+  DB_MAX_IDLE_CONNS: "25"
+  DB_CONN_MAX_LIFETIME: "5m"
+
+  # Redis Configuration
+  REDIS_HOST: "redis"
+  REDIS_PORT: "6379"
+  REDIS_DB: "0"
+  REDIS_POOL_SIZE: "10"
+  REDIS_DIAL_TIMEOUT: "5s"
+  REDIS_READ_TIMEOUT: "3s"
+  REDIS_WRITE_TIMEOUT: "3s"
+
+  # Service URLs
+  AUTH_SERVICE_URL: "http://auth-service:8080"
+  USER_SERVICE_URL: "http://user-service:8080"
+  POST_SERVICE_URL: "http://post-service:8080"
+  MEDIA_SERVICE_URL: "http://media-service:8080"
+
+  # Storage Configuration
+  STORAGE_PATH: "/app/storage"
+  STORAGE_MAX_FILE_SIZE: "10485760"
+  STORAGE_ALLOWED_TYPES: "image/jpeg,image/png,image/gif,video/mp4"
+
+  # Security Settings
+  SECURE_COOKIE: "true"
+  CORS_ALLOWED_ORIGINS: "https://yourdomain.com,http://localhost:3000"
+  RATE_LIMIT_REQUESTS: "100"
+  RATE_LIMIT_DURATION: "1m"
+  SSL_MIN_VERSION: "TLS1.2"
+
+  # Monitoring
+  ENABLE_METRICS: "true"
+  METRICS_PORT: "9090"
+  JAEGER_AGENT_HOST: "jaeger"
+  JAEGER_AGENT_PORT: "6831"
+
+  # Kafka Configuration
+  KAFKA_BROKERS: "kafka-1:9092,kafka-2:9092,kafka-3:9092"
+  KAFKA_CLIENT_ID: "social-network"
+  KAFKA_GROUP_ID: "social-network-group"
+  KAFKA_AUTO_OFFSET_RESET: "latest"
+  KAFKA_ENABLE_AUTO_COMMIT: "true"
+  KAFKA_AUTO_COMMIT_INTERVAL: "5s"
+  KAFKA_SESSION_TIMEOUT: "30s"
+  KAFKA_MAX_POLL_RECORDS: "500"
+  KAFKA_COMPRESSION_TYPE: "snappy"
+
+  # S3 Storage Configuration
+  S3_ENDPOINT: "minio:9000"
+  S3_REGION: "us-east-1"
+  S3_BUCKET: "social-network-media"
+  S3_ACCESS_KEY_ID: "${S3_ACCESS_KEY}"
+  S3_SECRET_ACCESS_KEY: "${S3_SECRET_KEY}"
+  S3_SSL_ENABLED: "false"
+  S3_FORCE_PATH_STYLE: "true"
+  S3_UPLOAD_TIMEOUT: "60s"
+  S3_DOWNLOAD_TIMEOUT: "60s"
+
+  # Environment
+  ENV: "development"
+  LOG_LEVEL: "debug"
