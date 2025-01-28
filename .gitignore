@@ -18,6 +18,26 @@ _obj
 _test
 _testmain.go
 
+# Python specific
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+.env/
+pyenv/
+pipenv/
+.tox/
+.coverage
+.coverage.*
+.pytest_cache/
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
 # IDE specific files
 .idea/
 .vscode/
@@ -53,6 +73,8 @@ certs/
 vendor/
 node_modules/
 go.work
+pip-log.txt
+pip-delete-this-directory.txt
 
 # Logs and data
 *.log
@@ -76,6 +98,9 @@ coverage.txt
 profile.out
 *.cover
 *.prof
+htmlcov/
+.tox/
+.nox/
 
 # Docker
 .docker/
@@ -109,3 +134,17 @@ terraform.rc
 # Kubernetes
 kubeconfig
 *.kubeconfig
+
+# Package management
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+parts/
+bin/
+var/
+sdist/
+wheels/
+share/python-wheels/
+.installed.cfg
