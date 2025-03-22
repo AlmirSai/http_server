@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"log"
 	"os"
 	"os/signal"
 	"syscall"
@@ -27,8 +28,7 @@ func main() {
 	// Load configuration
 	cfg, err := config.LoadConfig("config.yaml")
 	if err != nil {
-		fmt.Printf("Failed to load config: %v\n", err)
-		os.Exit(1)
+		log.Println("Failed to load config: %v\n", err)
 	}
 
 	// Initialize logger
@@ -47,7 +47,12 @@ func main() {
 		fmt.Printf("Failed to initialize logger: %v\n", err)
 		os.Exit(1)
 	}
-	defer logger.Sync()
+	defer func(logger *logging.Logger) {
+		err := logger.Sync()
+		if err != nil {
+			fmt.Errorf("Failed to sync logger: %v\n", err)
+		}
+	}(logger)
 
 	// Initialize metrics
 	metrics := monitoring.NewMetrics(cfg.Metrics.ServiceName)
